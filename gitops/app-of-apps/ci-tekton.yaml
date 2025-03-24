@@ -1,0 +1,25 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: r5l95j5ff-python-ci
+  namespace: rhtap-gitops
+  finalizers: ["resources-finalizer.argocd.argoproj.io"]
+spec:
+  project: default
+  source:
+    path: ./components/r5l95j5ff-python/overlays/ci
+    repoURL: https://github.com/rhtap-rhdh-qe/r5l95j5ff-python-gitops.git
+    targetRevision: main
+  destination:
+    namespace: rhtap-app-ci
+    server: https://kubernetes.default.svc
+  syncPolicy:
+    managedNamespaceMetadata:
+      labels:
+        argocd.argoproj.io/managed-by: rhtap-gitops
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - PruneLast=true
